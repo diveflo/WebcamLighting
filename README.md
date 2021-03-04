@@ -21,6 +21,18 @@ The tool is based on `.NET 5` and can therefore be easily build in Visual Studio
 dotnet build
 ```
 
+## How does this work?
+
+### Is the webcam used
+
+Windows puts registry keys for each executable that ever used your webcam under `Computer\HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam\NonPackaged`. Each of those keys has a `LastUsedTimeStop` subkey.
+If that is 0, the process/executable is currently using your webcam.
+
+### Where are the lights and how to control them
+
+Elgato Keylights are discovered using Bonjour which advertise under `_elg._tcp.local.`.
+These devices provide a REST Api on port `9123` to get and set the light's current state (on/off, brightness, color temperature).
+
 ## Extend for non-Windows and non-Elgato lights
 
 Currently, this tool only works for Windows-based systems and Elgato Keylights. However, this can be easily extended thanks to `.NET 5`.
