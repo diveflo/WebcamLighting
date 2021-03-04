@@ -8,10 +8,11 @@ Download the executable from GitHub and either run it directly or install as a (
 To install as a service, you can use `sc.exe`, e.g., like this:
 
 ```shell
-sc.exe create "Webcam Lights" binPath= "C:\Users\youraccount\webcamlighting\webcamlighting.exe" obj= ".\youraccount" password= "YourPassword"
+sc.exe create "Webcam Lights" binPath= "C:\Users\youraccount\webcamlighting.exe" obj= ".\youraccount" password= "YourPassword"
 ```
 
 *Hint*: The spaces after `binPath`, `obj` and `password` are required!
+
 *Hint*: As the Bonjour-based discovery of the lights might require additional confirmation, please use your local admin account for the command above. Otherwise I observed non-descript error messages when trying to launch the service.
 
 ## Build
@@ -26,12 +27,17 @@ dotnet build
 
 ### Is the webcam used
 
-Windows puts registry keys for each executable that ever used your webcam under `Computer\HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam\NonPackaged`. Each of those keys has a `LastUsedTimeStop` subkey.
-If that is 0, the process/executable is currently using your webcam.
+Windows puts registry keys for each executable that ever used your webcam under 
+
+```shell
+Computer\HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam\NonPackaged
+```
+
+Each of those keys has a `LastUsedTimeStop` subkey. If that is 0, the process/executable is currently using your webcam.
 
 ### Where are the lights and how to control them
 
-Elgato Keylights are discovered using Bonjour which advertise under `_elg._tcp.local.`.
+Elgato Keylights are discovered using Bonjour which advertise under `_elg._tcp.local.`
 These devices provide a REST Api on port `9123` to get and set the light's current state (on/off, brightness, color temperature).
 
 ## Extend for non-Windows and non-Elgato lights
