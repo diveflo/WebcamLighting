@@ -1,0 +1,12 @@
+### DotnetCore ###
+# .NET Core build folders
+bin/
+obj/
+*.csproj.user
+.dtbcache.v2
+.suo
+applicationhost.config
+.vs/
+debug.log
+*.pubxml
+*.pubxml.user
