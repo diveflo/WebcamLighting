@@ -12,6 +12,7 @@ sc.exe create "Webcam Lights" binPath= "C:\Users\youraccount\webcamlighting\webc
 ```
 
 *Hint*: The spaces after `binPath`, `obj` and `password` are required!
+*Hint*: As the Bonjour-based discovery of the lights might require additional confirmation, please use your local admin account for the command above. Otherwise I observed non-descript error messages when trying to launch the service.
 
 ## Build
 
