@@ -30,10 +30,10 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@main
-      - name: Version
-        id: version
+      - name: tag version
+        id: tag-version
         uses: juliansangillo/tag-version@v1
         with:  
           production-branch: main
-      - name: print Version
-        run: echo {{ steps.version.outputs.revision }}
+      - name: print version
+        run: echo {{ steps.tag-version.outputs.revision }}
