@@ -1,0 +1,27 @@
+name: ci/cd
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@main
+      - name: setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "5.0.100"
+      - name: build
+        run: dotnet build --configuration Release
+      - name: publish
+        run: dotnet publish --configuration Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+      - name: upload build artifacts
+        uses: actions/upload-artifact@main
+        with:
+          name: win-x64
+          path: bin/Release/win-x64/publish/
