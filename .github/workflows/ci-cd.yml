@@ -24,4 +24,14 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: win-x64
-          path: bin/Release/win-x64/publish/
+          path: bin/Release/win-x64/publish
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Version
+        id: git-version
+        uses: codacy/git-version@2.2.0
+        with:
+          release-branch: main
+      - name: print Version
+        run: echo {{ steps.git-version.outputs.version }}
