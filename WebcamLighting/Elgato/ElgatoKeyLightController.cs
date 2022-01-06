@@ -5,10 +5,9 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace WebcamLighting
+namespace WebcamLighting.Elgato
 {
     public class ElgatoKeyLightController : ILightController
     {
@@ -17,7 +16,10 @@ namespace WebcamLighting
 
         public bool IsOn => GetLightState().On == 1;
 
-        public string Id { get; }
+        public string Id
+        {
+            get;
+        }
 
         public ElgatoKeyLightController(string ip, string id, ILogger<ElgatoKeyLightController> logger)
         {
@@ -117,33 +119,4 @@ namespace WebcamLighting
             response.EnsureSuccessStatusCode();
         }
     }
-
-
-    public class ElgatoREST
-    {
-        [JsonPropertyName("numberOfLights")]
-        public int NumberOfLights { get; set; }
-
-        [JsonPropertyName("lights")]
-        public ElgatoLight[] Lights { get; set; }
-    }
-
-    public class ElgatoLight
-    {
-        [JsonPropertyName("on")]
-        public int On { get; set; }
-
-        [JsonPropertyName("brightness")]
-        public int Brightness { get; set; }
-
-        [JsonPropertyName("temperature")]
-        public int Temperature { get; set; }
-
-        public override string ToString()
-        {
-            var powerStateDescription = On == 1 ? "On/" : "Off/";
-            return powerStateDescription + $"{Brightness}% brigthness/{Temperature}K color temperature";
-        }
-    }
-
 }
