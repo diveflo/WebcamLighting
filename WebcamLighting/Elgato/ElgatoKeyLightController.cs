@@ -14,7 +14,7 @@ namespace WebcamLighting.Elgato
         private readonly string myLightIP;
         private readonly ILogger<ElgatoKeyLightController> myLogger;
 
-        public bool IsOn => GetLightState().On == 1;
+        public bool IsOn => GetLightState().Result.On == 1;
 
         public string Id
         {
@@ -30,7 +30,7 @@ namespace WebcamLighting.Elgato
 
         public void On()
         {
-            var currentState = GetLightState();
+            var currentState = GetLightState().Result;
             if (currentState.On == 1)
             {
                 myLogger.LogInformation($"Light {Id} already turned on");
@@ -46,7 +46,7 @@ namespace WebcamLighting.Elgato
 
         public void Off()
         {
-            var currentState = GetLightState();
+            var currentState = GetLightState().Result;
             if (currentState.On == 0)
             {
                 myLogger.LogInformation($"Light {Id} already turned off");
@@ -62,7 +62,7 @@ namespace WebcamLighting.Elgato
 
         public void SetBrightness(int brightness)
         {
-            var currentState = GetLightState();
+            var currentState = GetLightState().Result;
             if (currentState.Brightness == brightness)
             {
                 myLogger.LogInformation($"Light {Id} already set to {brightness}% brightness");
@@ -78,7 +78,7 @@ namespace WebcamLighting.Elgato
 
         public void SetTemperature(int temperature)
         {
-            var currentState = GetLightState();
+            var currentState = GetLightState().Result;
             if (currentState.Temperature == temperature)
             {
                 myLogger.LogInformation($"Light {Id} already set to {temperature}K color temperature");
@@ -92,13 +92,13 @@ namespace WebcamLighting.Elgato
             SetLightStateAsync(requestedState).Wait(1000);
         }
 
-        private ElgatoLight GetLightState()
+        private async Task<ElgatoLight> GetLightState()
         {
-            var webRequest = WebRequest.Create($"http://{myLightIP}:9123/elgato/lights");
-            webRequest.ContentType = "application/json";
+            using var webClient = new HttpClient();
 
-            using var response = webRequest.GetResponse();
-            using var responseStream = response.GetResponseStream();
+            var response = await webClient.GetAsync($"http://{myLightIP}:9123/elgato/lights");
+            response.EnsureSuccessStatusCode();
+            await using var responseStream = await response.Content.ReadAsStreamAsync();
             using var responseStreamReader = new StreamReader(responseStream);
 
             var parsedResponse = JsonSerializer.Deserialize<ElgatoREST>(responseStreamReader.ReadToEnd(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
