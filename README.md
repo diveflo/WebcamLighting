@@ -17,7 +17,7 @@ sc.exe create "Webcam Lights" binPath= "C:\Users\youraccount\webcamlighting.exe"
 
 ## Build
 
-The tool is based on `.NET 5` and can therefore be easily build in Visual Studio or your favorite shell using:
+The tool is based on `.NET 6` and can therefore be easily build in Visual Studio or your favorite shell using:
 
 ```shell
 dotnet build
@@ -42,7 +42,7 @@ These devices provide a REST Api on port `9123` to get and set the light's curre
 
 ## Extend for non-Windows and non-Elgato lights
 
-Currently, this tool only works for Windows-based systems and Elgato Keylights. However, this can be easily extended thanks to `.NET 5`.
+Currently, this tool only works for Windows-based systems and Elgato Keylights. However, this can be easily extended thanks to `.NET 6`.
 To support e.g. Linux-based systems, only a new class implementing the `IWebcamMonitor` interface needs to be added and setup for dependency inject in `Program.cs`.
 Additionally, `.UseWindowsService()` would have to be replaced by `.UseSystemd()`.
 
