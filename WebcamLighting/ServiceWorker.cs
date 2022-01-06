@@ -23,7 +23,7 @@ namespace WebcamLighting
         {
             myLogger.LogInformation("Started service worker");
 
-            var wasInUse = false;
+            var wasInUse = myWebcamMonitor.CurrentlyInUse();
 
             while (!stoppingToken.IsCancellationRequested)
             {
