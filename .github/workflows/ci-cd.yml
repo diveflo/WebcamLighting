@@ -11,11 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - runtime: win-x64
-            artifact: win-x64
-          - runtime: linux-x64
-            artifact: linux-x64
+        os: [win-x64, linux-x64]
     steps:
       - name: checkout code
         uses: actions/checkout@main
@@ -26,20 +22,18 @@ jobs:
       - name: build
         run: dotnet build --configuration Release
       - name: publish
-        run: dotnet publish --configuration Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:UseAppHost=true
+        run: dotnet publish --configuration Release -r ${{ matrix.os }} --self-contained true -p:PublishSingleFile=true -p:UseAppHost=true
       - name: upload build artifacts
         uses: actions/upload-artifact@main
         with:
-          name: ${{ matrix.artifact }}
-          path: bin/Release/${{ matrix.runtime }}/publish
+          name: ${{ matrix.os }}
+          path: bin/Release/${{ matrix.os }}/publish
   test:
     runs-on: ubuntu-latest
     needs: build
     strategy:
       matrix:
-        include:
-          - artifact: win-x64
-          - artifact: linux-x64
+        os: [win-x64, linux-x64]
     steps:
       - name: checkout code
         uses: actions/checkout@main
@@ -50,8 +44,8 @@ jobs:
       - name: download build artifacts
         uses: actions/download-artifact@v5.0.0
         with:
-          name: ${{ matrix.artifact }}
-          path: ${{runner.temp}}/${{ matrix.artifact }}
+          name: ${{ matrix.os }}
+          path: ${{runner.temp}}/${{ matrix.os }}
       - name: run tests
         run: dotnet test --configuration Release
   release:
