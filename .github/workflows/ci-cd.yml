@@ -14,10 +14,8 @@ jobs:
         include:
           - runtime: win-x64
             artifact: win-x64
-            tag: latest-win
           - runtime: linux-x64
             artifact: linux-x64
-            tag: latest-linux
     steps:
       - name: checkout code
         uses: actions/checkout@main
@@ -40,10 +38,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - runtime: win-x64
-            artifact: win-x64
-          - runtime: linux-x64
-            artifact: linux-x64
+          - artifact: win-x64
+          - artifact: linux-x64
     steps:
       - name: checkout code
         uses: actions/checkout@main
