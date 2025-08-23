@@ -7,20 +7,17 @@ on:
     branches: [main]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout code
-        uses: actions/checkout@main
-      - name: setup dotnet
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "8.0"
-      - name: run tests
-        run: dotnet test --configuration Release
   build:
     runs-on: ubuntu-latest
-    needs: test
+    strategy:
+      matrix:
+        include:
+          - runtime: win-x64
+            artifact: win-x64
+            tag: latest-win
+          - runtime: linux-x64
+            artifact: linux-x64
+            tag: latest-linux
     steps:
       - name: checkout code
         uses: actions/checkout@main
@@ -31,27 +28,59 @@ jobs:
       - name: build
         run: dotnet build --configuration Release
       - name: publish
-        run: dotnet publish --configuration Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+        run: dotnet publish --configuration Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true
       - name: upload build artifacts
         uses: actions/upload-artifact@main
         with:
-          name: win-x64
-          path: bin/Release/win-x64/publish
+          name: ${{ matrix.artifact }}
+          path: bin/Release/${{ matrix.runtime }}/publish
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        include:
+          - runtime: win-x64
+            artifact: win-x64
+          - runtime: linux-x64
+            artifact: linux-x64
+    steps:
+      - name: checkout code
+        uses: actions/checkout@main
+      - name: setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0"
+      - name: download build artifacts
+        uses: actions/download-artifact@v5.0.0
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{runner.temp}}/${{ matrix.artifact }}
+      - name: run tests
+        run: dotnet test --configuration Release
   release:
     runs-on: ubuntu-latest
-    needs: [test, build]
+    needs: test
     if: github.ref == 'refs/heads/main'
     steps:
       - name: checkout
         uses: actions/checkout@v5
-      - name: download build artifacts
+      - name: download win-x64 build artifacts
         uses: actions/download-artifact@v5.0.0
         with:
           name: win-x64
           path: ${{runner.temp}}/win-x64
-      - name: prepare release asset
+      - name: download linux-x64 build artifacts
+        uses: actions/download-artifact@v5.0.0
+        with:
+          name: linux-x64
+          path: ${{runner.temp}}/linux-x64
+      - name: prepare win-x64 release asset
         shell: pwsh
         run: Compress-Archive -Path ${{runner.temp}}/win-x64 -DestinationPath win-x64.zip
+      - name: prepare linux-x64 release asset
+        shell: pwsh
+        run: Compress-Archive -Path ${{runner.temp}}/linux-x64 -DestinationPath linux-x64.zip
       - name: delete previous release
         uses: dev-drprasad/delete-tag-and-release@v1.0.1
         with:
@@ -62,6 +91,8 @@ jobs:
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          automatic_release_tag: latest
           prerelease: false
-          files: win-x64.zip
+          files: |
+            win-x64.zip
+            linux-x64.zip
