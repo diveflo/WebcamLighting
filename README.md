@@ -52,7 +52,7 @@ Under Linux we check `/dev/video` for linkage.
 Elgato Keylights are discovered using Bonjour which advertise under `_elg._tcp.local.`
 These devices provide a REST Api on port `9123` to get and set the light's current state (on/off, brightness, color temperature).
 
-## Extend for non-Windows and non-Elgato lights
+## Extend for non-Elgato lights
 
 Currently, this tool only works for Elgato Keylights. Non-Elgato lights would require two new classes implementing the `ILightController` and `ILightManager` interfaces and be wired into the DI setup in `Program.cs`
 
