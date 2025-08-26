@@ -17,7 +17,7 @@ sc.exe create "Webcam Lights" binPath= "C:\Users\youraccount\webcamlighting.exe"
 
 *Hint*: As the Bonjour-based discovery of the lights might require additional confirmation, please use your local admin account for the command above. Otherwise I observed non-descript error messages when trying to launch the service.
 
-#### Linux Service
+### Linux Service
 
 Use your favorite service manager to configure the service. The build output can be run via `dotnet WebcamLighting.dll`.
 
