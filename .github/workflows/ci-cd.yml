@@ -72,7 +72,7 @@ jobs:
         shell: pwsh
         run: Compress-Archive -Path ${{runner.temp}}/linux-x64 -DestinationPath linux-x64.zip
       - name: delete previous release
-        uses: dev-drprasad/delete-tag-and-release@v1.0.1
+        uses: dev-drprasad/delete-tag-and-release@v1.1
         with:
           tag_name: latest
         env:
