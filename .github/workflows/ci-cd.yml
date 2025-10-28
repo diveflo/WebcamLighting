@@ -42,7 +42,7 @@ jobs:
         with:
           dotnet-version: "8.0"
       - name: download build artifacts
-        uses: actions/download-artifact@v5.0.0
+        uses: actions/download-artifact@v6.0.0
         with:
           name: ${{ matrix.os }}
           path: ${{runner.temp}}/${{ matrix.os }}
@@ -56,12 +56,12 @@ jobs:
       - name: checkout
         uses: actions/checkout@v5
       - name: download win-x64 build artifacts
-        uses: actions/download-artifact@v5.0.0
+        uses: actions/download-artifact@v6.0.0
         with:
           name: win-x64
           path: ${{runner.temp}}/win-x64
       - name: download linux-x64 build artifacts
-        uses: actions/download-artifact@v5.0.0
+        uses: actions/download-artifact@v6.0.0
         with:
           name: linux-x64
           path: ${{runner.temp}}/linux-x64
